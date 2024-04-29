@@ -1,0 +1,43 @@
+
+
+body {
+    font-family: sans-serif;
+}
+
+
+
+h1 {
+    font-size: 40px;
+    font-weight: normal;
+    color: rgb(141, 141, 141); 
+    text-align: center;
+} 
+
+h2 {
+    font-size: 32px;
+    color: rgb(100, 100, 100); 
+    text-align: center;
+}
+
+#banner {
+    width: 100%;
+    height: 360px;
+    object-fit: cover;
+    /* overflow: hidden; */
+} 
+
+/* .about-paragraph {
+    text-align: center; 
+    color: rgb(80, 80, 80);
+}  */
+
+/* .container {
+    max-width: 1200px; 
+    margin: 0 auto;
+}
+  */
+
+/*   
+.button-div {
+    text-align: center;
+} */

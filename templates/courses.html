@@ -1,0 +1,30 @@
+
+<div class="border-bottom row" style="margin-bottom: 16px; padding-bottom: 4px;"> 
+    <div class="col-10" style="padding-top: 8px;">
+        <h5 style="color: rgb(120, 120, 120); margin-bottom: 4px;">{{course['course']}}</h5> 
+        <div>{{course['location']}}</div> 
+        <div>{{course['school']}}</div> 
+        {% if 'tuition' in course %}
+        <div>{{course['tuition']}}</div> 
+        {% endif %} 
+        <!-- </br> -->
+    </div>
+
+    <div class="col-2">
+        <!-- <button type="button" class="btn btn-outline-primary">Apply</button>
+        <a href="https://google.com" type="button" class="btn btn-outline-primary">Apply</a>  -->
+        <!-- <a href="mailto:info@scovers.org?subject=Course Application for {{course['course']}}, {{course['location']}}" type="button" class="btn btn-outline-primary">Apply</a> -->
+        
+        <!--         
+        <a href="mailto:info@scovers.org?subject=Course%20Application%20for%20{{course['course']}},{{course['location']}}&body=Name%3A%20%3Cyour%20name%20here%3E%0D%0A%0D%0A" type="button" class="btn btn-outline-primary">Apply</a>
+         --> 
+         
+        <a href="/course/{{course['id']}}" type="button" class="btn btn-outline-primary">Apply</a>
+        
+    </div>
+</div> 
+
+
+
+
+

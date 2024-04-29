@@ -1,0 +1,23 @@
+<h4>Application Form</h4>
+<form action="/course/{{course['id']}}/apply" method="post" class="mx-auto" style="max-width: 400px;">
+    <div class="mb-3">
+        <label for="full_name" class="form-label">Full Name</label>
+        <input type="text" class="form-control" id="full_name" name="full_name" placeholder="Enter your full name here" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email address here" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="phone" class="form-label">Phone</label>
+        <input type="text" class="form-control" id="phone" name="phone" placeholder="Enter your phone number here" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="document_url" class="form-label">Documents Link</label>
+        <input type="url" class="form-control" id="document_url" name="document_url" placeholder="Paste the URL to your documents here, preferably downloadable Google Docs">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
