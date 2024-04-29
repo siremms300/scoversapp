@@ -83,21 +83,6 @@ def apply_course(id):
 
 
 
-# @app.route('/search')
-# def search_courses():
-#     query = request.args.get('q')
-#     if not query:
-#         return render_template('home.html', courses=load_courses_from_db())
-
-#     # Perform a database query to search for courses
-#     # Modify the query to search for courses based on the query string
-#     search_results = search_courses_in_db(query)
-#     return render_template('search_results.html', query=query, results=search_results)
-
-
-
-
-
 @app.route('/search')
 def search_courses():
     query = request.args.get('q')
@@ -120,11 +105,3 @@ def search_courses():
     return render_template('search_results.html', query=query, results=sorted_results)
 
 
-
-
-
-
-
-
-if __name__ == '__main__': 
-    app.run(debug=True) 
