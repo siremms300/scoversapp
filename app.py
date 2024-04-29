@@ -32,11 +32,6 @@ def show_course(id):
 
 
 
-# @app.route('/api/courses') 
-# def listcourses():
-#     courses = load_courses_from_db() 
-#     return jsonify(courses) 
-
 
 
 @app.route('/api/courses')
@@ -83,6 +78,9 @@ def apply_course(id):
 
 
 
+
+
+
 @app.route('/search')
 def search_courses():
     query = request.args.get('q')
@@ -103,5 +101,8 @@ def search_courses():
     sorted_results = sorted(search_results, key=lambda x: x['location'])
 
     return render_template('search_results.html', query=query, results=sorted_results)
+
+
+
 
 
