@@ -21,18 +21,24 @@
         {% block content %}
             <div class="container mt-4">
                 <h2>Search Results for "{{ query }}"</h2>
-               
-                    {% include 'form.html' %}
-                
                 <div class="row">
                     {% if results %}
                         {% for course in results %}
                             {% include 'courses.html' %}
                         {% endfor %}
+                        <div class="text-center">
+                            {% if page > 1 %}
+                                <a href="{{ url_for('search_courses', q=query, location=location, page=page-1) }}" class="btn btn-secondary btn-large mb-2 mt-4">Previous</a>
+                            {% endif %}
+                            {% if results|length == 8 %}
+                                <a href="{{ url_for('search_courses', q=query, location=location, page=page+1) }}" class="btn btn-secondary btn-large mb-2 mt-4">Next</a>
+                            {% endif %}
+                        </div>
                     {% else %}
                         <div class="col-md-12">
-                        <div class="alert alert-info" role="alert">
-                            <strong>No results found.</strong> Please try another search query.
+                            <div class="alert alert-info" role="alert">
+                                <strong>No results found.</strong> Please try another search query.
+                            </div>
                         </div>
                     {% endif %}
                 </div>
@@ -44,6 +50,6 @@
 
     </div>
         
-    {% include 'footer.html' %}
+    {% include 'footer.html' %} 
 </body>
 </html>

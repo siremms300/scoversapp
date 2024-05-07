@@ -45,6 +45,26 @@
                 {% include 'courses.html' %}
             {% endfor %}
         </p> 
+
+
+
+        <!-- Add pagination buttons -->
+        <div class="text-center">
+            {% if page > 1 %}
+            <a href="{{ url_for('index', page=page-1) }}" class="btn btn-secondary btn-large mb-2 mt-4">Previous</a>
+            {% endif %}
+            
+            {% if courses %}
+            <a href="{{ url_for('index', page=page+1) }}" class="btn btn-secondary btn-large mb-2 mt-4">Next</a>
+            {% endif %}
+        </div>
+        <!-- End of pagination -->
+
+
+
+
+
+
         <div class="text-center">
             <!-- <button class="btn btn-primary btn-large mb-2 mt-4">Contact us</button> -->
             <a target="_blank" href="mailto:info@scovers.org?subject=Enquiries%20&body=Name%3A%0D%0A%0D%0A" class="btn btn-primary btn-large mb-2 mt-4">Contact us</a>

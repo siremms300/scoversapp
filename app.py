@@ -1,16 +1,18 @@
-from flask import Flask, render_template, request, jsonify 
+from flask import Flask, render_template, request, jsonify, redirect, url_for
 # import pymysql
 from database import load_courses_from_db, load_course_from_db, add_application_to_db, search_courses_in_db
 
 app = Flask(__name__)  
 
 
-@app.route('/') 
-def index(): 
-    courses = load_courses_from_db()
-    # return "Hello world" 
-    return render_template('home.html', courses=courses) 
+@app.route('/')
+def index():
+    page = request.args.get('page', default=1, type=int)
+    sort_by = request.args.get('sort_by', None)
+    courses = load_courses_from_db(page=page, sort_by=sort_by)
+    return render_template('home.html', courses=courses, page=page, sort_by=sort_by)
 
+ 
 
 
 
@@ -48,12 +50,6 @@ def listcourses():
 
 
 
-
-
-
-
-
-
 @app.route('/course/<id>/apply', methods=['POST']) 
 def apply_course(id):
     # Extract additional parameters from the query string
@@ -77,21 +73,20 @@ def apply_course(id):
 
 
 
-
-
-
-
 @app.route('/search')
 def search_courses():
     query = request.args.get('q')
     location = request.args.get('location')
+    page = request.args.get('page', default=1, type=int)
+    sort_by = request.args.get('sort_by', None)
 
     if not query and not location:
         # If neither query nor location provided, display all courses
-        return render_template('home.html', courses=load_courses_from_db())
+        courses = load_courses_from_db(page=page, sort_by=sort_by)
+        return render_template('home.html', courses=courses, page=page, sort_by=sort_by)
 
-    # Perform a database query to search for courses
-    search_results = search_courses_in_db(query)
+    # Perform a database query to search for courses with pagination
+    search_results = search_courses_in_db(query, page=page)
 
     if location:
         # If location provided, filter courses by location
@@ -100,9 +95,7 @@ def search_courses():
     # Sort courses by location if location is provided
     sorted_results = sorted(search_results, key=lambda x: x['location'])
 
-    return render_template('search_results.html', query=query, results=sorted_results)
-
-
+    return render_template('search_results.html', query=query, results=sorted_results, page=page, sort_by=sort_by)
 
 
 

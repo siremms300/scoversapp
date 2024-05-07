@@ -9,22 +9,27 @@ password = 'nkFjvzhlcaOP9jDD3oS1A4Dm'
 database = 'db-apxgqtiyl5lt'
 
 
-def load_courses_from_db():
+
+
+
+
+def load_courses_from_db(page=1, per_page=8, sort_by=None):
     try:
-        connection = pymysql.connect(host=host,
-                                    port=port,
-                                    user=user,
-                                    password=password,
-                                    database=database)
-        print("Successfully connected to the database!")
-        # Now you can execute queries using the connection object
-        # For example:
+        connection = pymysql.connect(host=host, port=port, user=user, password=password, database=database)
         with connection.cursor() as cursor:
-            cursor.execute("SELECT * FROM courses")
-            result = cursor.fetchall() 
+            # Calculate the offset based on the page number
+            offset = (page - 1) * per_page
 
+            # Construct the SQL query with optional sorting
+            sql = "SELECT * FROM courses"
+            if sort_by:
+                sql += f" ORDER BY location {sort_by}"
+            sql += " LIMIT %s OFFSET %s"
 
-            # Convert list of tuples to list of dictionaries
+            cursor.execute(sql, (per_page, offset))
+            result = cursor.fetchall()
+
+            # Convert the result to a list of dictionaries
             result_dict_list = []
             for row in result:
                 row_dict = {
@@ -39,14 +44,18 @@ def load_courses_from_db():
                 }
                 result_dict_list.append(row_dict)
 
-            print("type of result: ", type(result_dict_list))
-            print(result_dict_list) 
-
             return result_dict_list
 
-
     except pymysql.Error as e:
-            print(f"Error connecting to the database: {e}")
+        print(f"Error loading courses from the database: {e}")
+        return []
+    finally:
+        connection.close()
+
+
+
+
+
 
 
 
@@ -102,6 +111,7 @@ def load_course_from_db(id, course=None, location=None, school=None, tuition=Non
 
 
 
+
 def add_application_to_db(course_id, course_name, location, school, tuition, data):
     try:
         connection = pymysql.connect(host=host,
@@ -137,8 +147,7 @@ def add_application_to_db(course_id, course_name, location, school, tuition, dat
 
 
 
-
-def search_courses_in_db(query):
+def search_courses_in_db(query, page=1, per_page=8):
     try:
         connection = pymysql.connect(host=host,
                                     port=port,
@@ -146,9 +155,12 @@ def search_courses_in_db(query):
                                     password=password,
                                     database=database)
         with connection.cursor() as cursor:
-            # Construct the SQL query to search for courses
-            sql = "SELECT * FROM courses WHERE course LIKE %s OR location LIKE %s OR school LIKE %s"
-            params = [f"%{query}%", f"%{query}%", f"%{query}%"]
+            # Calculate the offset based on the page number
+            offset = (page - 1) * per_page
+
+            # Construct the SQL query to search for courses with pagination
+            sql = "SELECT * FROM courses WHERE course LIKE %s OR location LIKE %s OR school LIKE %s LIMIT %s OFFSET %s"
+            params = [f"%{query}%", f"%{query}%", f"%{query}%", per_page, offset]
             cursor.execute(sql, params)
             result = cursor.fetchall()
 
@@ -172,6 +184,7 @@ def search_courses_in_db(query):
     except pymysql.Error as e:
         print(f"Error searching courses in the database: {e}")
         return []
-
     finally:
-        connection.close()
+        connection.close() 
+
+
