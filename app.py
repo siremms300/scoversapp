@@ -1,24 +1,28 @@
 #app.py
 
-
 from authlib.integrations.flask_client import OAuth
 from flask import Flask, render_template, request, jsonify, redirect, url_for, session
 import json
+import os
+from dotenv import load_dotenv
 
 # import pymysql
 from database import load_courses_from_db, load_course_from_db, add_application_to_db, search_courses_in_db
+
+
+# Load environment variables from .env file
+load_dotenv()
 
 app = Flask(__name__)  
 
 
 appConf = {
-    "OAUTH2_CLIENT_ID": "950826060226-fis6v47trlbv8vqiei40rji69u3fgdo3.apps.googleusercontent.com",
-    "OAUTH2_CLIENT_SECRET": "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",
+    "OAUTH2_CLIENT_ID": os.getenv("OAUTH2_CLIENT_ID"),
+    "OAUTH2_CLIENT_SECRET": os.getenv("OAUTH2_CLIENT_SECRET"),
     "OAUTH2_META_URL": "https://accounts.google.com/.well-known/openid-configuration",
-    "FLASK_SECRET": "7da06fed-aa86-4fa8-a964-0075cc98b604",
+    "FLASK_SECRET": os.getenv("FLASK_SECRET"),
     "FLASK_PORT": 5000
-} 
-
+}
 
 
 app.secret_key = appConf.get('FLASK_SECRET')
@@ -145,6 +149,5 @@ def search_courses():
     sorted_results = sorted(search_results, key=lambda x: x['location'])
 
     return render_template('search_results.html', query=query, results=sorted_results, page=page, sort_by=sort_by, filters=filters)
-
 
 
