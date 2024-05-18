@@ -1,5 +1,6 @@
-import pymysql
+#database.py 
 
+import pymysql
 
 # Database connection details
 host = 'up-es-mad1-mysql-1.db.run-on-seenode.com'
@@ -10,23 +11,30 @@ database = 'db-apxgqtiyl5lt'
 
 
 
-
-
-
-def load_courses_from_db(page=1, per_page=8, sort_by=None):
+def load_courses_from_db(page=1, per_page=8, sort_by=None, filters=None):
     try:
         connection = pymysql.connect(host=host, port=port, user=user, password=password, database=database)
         with connection.cursor() as cursor:
             # Calculate the offset based on the page number
             offset = (page - 1) * per_page
 
-            # Construct the SQL query with optional sorting
-            sql = "SELECT * FROM courses"
+            # Construct the SQL query with optional filtering and sorting
+            sql = "SELECT * FROM courses"   
+            params = []
+            if filters:
+                filter_clauses = []
+                for filter_value in filters:
+                    filter_clauses.append("course LIKE %s")
+                    params.append(f"%{filter_value}%")
+                sql += " WHERE " + " OR ".join(filter_clauses)
+
             if sort_by:
                 sql += f" ORDER BY location {sort_by}"
-            sql += " LIMIT %s OFFSET %s"
 
-            cursor.execute(sql, (per_page, offset))
+            sql += " LIMIT %s OFFSET %s"
+            params.extend([per_page, offset])
+
+            cursor.execute(sql, params)
             result = cursor.fetchall()
 
             # Convert the result to a list of dictionaries
@@ -51,13 +59,6 @@ def load_courses_from_db(page=1, per_page=8, sort_by=None):
         return []
     finally:
         connection.close()
-
-
-
-
-
-
-
 
 
 
@@ -146,8 +147,7 @@ def add_application_to_db(course_id, course_name, location, school, tuition, dat
 
 
 
-
-def search_courses_in_db(query, page=1, per_page=8):
+def search_courses_in_db(query, page=1, per_page=8, filters=None):
     try:
         connection = pymysql.connect(host=host,
                                     port=port,
@@ -159,8 +159,19 @@ def search_courses_in_db(query, page=1, per_page=8):
             offset = (page - 1) * per_page
 
             # Construct the SQL query to search for courses with pagination
-            sql = "SELECT * FROM courses WHERE course LIKE %s OR location LIKE %s OR school LIKE %s LIMIT %s OFFSET %s"
-            params = [f"%{query}%", f"%{query}%", f"%{query}%", per_page, offset]
+            sql = "SELECT * FROM courses WHERE (course LIKE %s OR location LIKE %s OR school LIKE %s)"
+            params = [f"%{query}%", f"%{query}%", f"%{query}%"]
+
+            if filters:
+                filter_clauses = []
+                for filter_value in filters:
+                    filter_clauses.append("course LIKE %s")
+                    params.append(f"%{filter_value}%")
+                sql += " AND (" + " OR ".join(filter_clauses) + ")"
+
+            sql += " LIMIT %s OFFSET %s"
+            params.extend([per_page, offset])
+            
             cursor.execute(sql, params)
             result = cursor.fetchall()
 
@@ -185,6 +196,4 @@ def search_courses_in_db(query, page=1, per_page=8):
         print(f"Error searching courses in the database: {e}")
         return []
     finally:
-        connection.close() 
-
-
+        connection.close()

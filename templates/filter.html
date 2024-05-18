@@ -1,0 +1,50 @@
+
+
+
+<form class="mb-4" action="{{ url_for('search_courses') }}" method="GET">
+    <div class="row">
+      <div class="col-md-6">
+        <h4>Filter by Course Level:</h4>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="BS" id="filter_bs" name="filters">
+          <label class="form-check-label" for="filter_bs">
+            Bachelor's Degree (BS)
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Masters" id="filter_masters" name="filters">
+          <label class="form-check-label" for="filter_masters">
+            Master's Degree
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Doctor" id="filter_doctorate" name="filters">
+          <label class="form-check-label" for="filter_doctorate">
+            Doctorate (Ph.D.)
+          </label>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <h4>Filter by Discipline:</h4>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Arts" id="filter_arts" name="filters">
+          <label class="form-check-label" for="filter_arts">
+            Arts
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Science" id="filter_science" name="filters">
+          <label class="form-check-label" for="filter_science">
+            Science
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Engineering" id="filter_engineering" name="filters">
+          <label class="form-check-label" for="filter_engineering">
+            Engineering
+          </label>
+        </div>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Filter</button>
+  </form>

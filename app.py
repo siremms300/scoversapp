@@ -1,18 +1,67 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for
+#app.py
+
+
+from authlib.integrations.flask_client import OAuth
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session
+import json
+
 # import pymysql
 from database import load_courses_from_db, load_course_from_db, add_application_to_db, search_courses_in_db
 
 app = Flask(__name__)  
 
 
+appConf = {
+    "OAUTH2_CLIENT_ID": "950826060226-fis6v47trlbv8vqiei40rji69u3fgdo3.apps.googleusercontent.com",
+    "OAUTH2_CLIENT_SECRET": "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",
+    "OAUTH2_META_URL": "https://accounts.google.com/.well-known/openid-configuration",
+    "FLASK_SECRET": "7da06fed-aa86-4fa8-a964-0075cc98b604",
+    "FLASK_PORT": 5000
+} 
+
+
+
+app.secret_key = appConf.get('FLASK_SECRET')
+
+
+oauth = OAuth(app) 
+
+oauth.register("myApp",
+               client_id=appConf.get("OAUTH2_CLIENT_ID"),
+               client_secret=appConf.get("OAUTH2_CLIENT_SECRET"),
+               server_metadata_url=appConf.get("OAUTH2_META_URL"),
+               client_kwargs= {
+                   "scope": "openid profile email"
+               }
+               ) 
+
+
 @app.route('/')
 def index():
     page = request.args.get('page', default=1, type=int)
     sort_by = request.args.get('sort_by', None)
-    courses = load_courses_from_db(page=page, sort_by=sort_by)
-    return render_template('home.html', courses=courses, page=page, sort_by=sort_by)
+    filters = request.args.getlist('filters')
+    courses = load_courses_from_db(page=page, sort_by=sort_by, filters=filters)
+    return render_template('home.html', courses=courses, page=page, sort_by=sort_by, filters=filters, 
+                           session=session.get("user"), pretty=json.dumps(session.get("user"), indent=4))
+
+
+@app.route('/google-login')
+def googleLogin():
+    return oauth.myApp.authorize_redirect(redirect_uri=url_for("googleCallback", _external=True))
 
  
+@app.route('/google-signin') 
+def googleCallback():
+    token = oauth.myApp.authorize_access_token()
+    session["user"] = token 
+    return redirect(url_for("index")) 
+
+
+@app.route('/logout')
+def logout():
+    session.pop('user', None)
+    return redirect(url_for('index'))
 
 
 
@@ -72,21 +121,21 @@ def apply_course(id):
 
 
 
-
 @app.route('/search')
 def search_courses():
     query = request.args.get('q')
     location = request.args.get('location')
     page = request.args.get('page', default=1, type=int)
     sort_by = request.args.get('sort_by', None)
+    filters = request.args.getlist('filters')
 
     if not query and not location:
         # If neither query nor location provided, display all courses
-        courses = load_courses_from_db(page=page, sort_by=sort_by)
-        return render_template('home.html', courses=courses, page=page, sort_by=sort_by)
+        courses = load_courses_from_db(page=page, sort_by=sort_by, filters=filters)
+        return render_template('home.html', courses=courses, page=page, sort_by=sort_by, filters=filters)
 
-    # Perform a database query to search for courses with pagination
-    search_results = search_courses_in_db(query, page=page)
+    # Perform a database query to search for courses with pagination and filtering
+    search_results = search_courses_in_db(query, page=page, filters=filters)
 
     if location:
         # If location provided, filter courses by location
@@ -95,7 +144,7 @@ def search_courses():
     # Sort courses by location if location is provided
     sorted_results = sorted(search_results, key=lambda x: x['location'])
 
-    return render_template('search_results.html', query=query, results=sorted_results, page=page, sort_by=sort_by)
+    return render_template('search_results.html', query=query, results=sorted_results, page=page, sort_by=sort_by, filters=filters)
 
 
 
