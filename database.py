@@ -197,3 +197,24 @@ def search_courses_in_db(query, page=1, per_page=8, filters=None):
         return []
     finally:
         connection.close()
+
+
+def add_user_to_db(user_id, user_name, user_email):
+    try:
+        connection = pymysql.connect(host=host,
+                                     port=port,
+                                     user=user,
+                                     password=password,
+                                     database=database)
+        with connection.cursor() as cursor:
+            # Check if the user already exists
+            cursor.execute("SELECT email FROM users WHERE email = %s", (user_email,)) 
+            if cursor.fetchone() is None:
+                # Insert the new user
+                cursor.execute("INSERT INTO users (user_id, name, email) VALUES (%s, %s, %s)", 
+                               (user_id, user_name, user_email))
+                connection.commit()
+    except pymysql.Error as e:
+        print(f"Failed to add user to the database: {e}")
+    finally:
+        connection.close()

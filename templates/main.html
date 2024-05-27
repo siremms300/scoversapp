@@ -1,0 +1,109 @@
+
+<div class="main">
+    <nav class="navbar navbar-expand px-4 py-3">
+        <!-- <form action="#" class="d-none d-sm-inline-block">
+
+        </form>  -->
+
+        <!-- Searchbar start -->
+        
+        <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search" action="{{ url_for('search_courses') }}" method="GET">
+            <input type="search" name="q" class="form-control form-control-dark" placeholder="Search..." aria-label="Search">
+        </form>
+        <!-- Searchbar end -->
+
+
+        <div class="navbar-collapse collapse">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item dropdown">
+                    <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-md-0">
+                        <!-- <img src="/static/images/account.png" class="avatar img-fluid" alt=""> -->
+                        <img src="{{ session['user']['picture'] if 'user' in session else '/static/images/account.png' }}" class="avatar img-fluid" alt="User Picture" style="border-radius: 50%;">
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end rounded">
+                        <a class="dropdown-item" href="/profile">Profile</a>
+                        <a class="dropdown-item" href="/settings">Settings</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="/logout">Logout</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- Profile icon end -->
+    </nav>
+
+    <!-- Main content start -->
+    <main class="content px-3 py-4">
+        <div class="container-fluid">
+            <div class="mb-3">
+                <h3 class="fw-light fs-4 mb-3"> Welcome, {{ user.name if user else 'Username' }} </h3>
+                <div class="row">
+                    <div class="col-12 col-md-4 ">
+                        <div class="card border-0">
+                            <div class="card-body py-4">
+                                <h5 class="mb-2 fw-light">
+                                   <a href="/home.html"> Saved Courses </a>
+                                </h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4 ">
+                        <div class="card  border-0">
+                            <div class="card-body py-4">
+                                <h5 class="mb-2 fw-light">
+                                    <a href="/home.html"> Upcoming Events </a>
+                                </h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4 ">
+                        <div class="card border-0">
+                            <div class="card-body py-4">
+                                <h5 class="mb-2 fw-light">
+                                    <a href="/home.html"> My Documents </a>
+                                </h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </main>
+    <!-- main content end -->
+
+    <!-- USER SESSION CHECK START -->
+    <!-- <div>
+        <h2>User Session</h2>
+        <pre>{{ user }}</pre>
+    </div> -->
+    <!-- USER SESSION CHECK END -->
+
+    <!-- footer start -->
+    <footer class="footer">
+        <div class="container-fluid">
+            <div class="row text-body-secondary">
+                <div class="col-6 text-start ">
+                    <a class="text-body-secondary" href=" #">
+                        <strong>Scovers Education</strong>
+                    </a>
+                </div>
+                <div class="col-6 text-end text-body-secondary d-none d-md-block">
+                    <ul class="list-inline mb-0">
+                        <li class="list-inline-item">
+                            <a class="text-body-secondary" href="#">Contact</a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a class="text-body-secondary" href="#">About Us</a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a class="text-body-secondary" href="#">Terms & Conditions</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- footer end -->
+</div>

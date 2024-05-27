@@ -22,6 +22,7 @@
         <div class="text-end">
           {% if session %} 
             <a  href="{{ url_for('logout') }}"><button type="button" class="btn btn-outline-light me-2">Logout</button></a>
+            <a  href="{{ url_for('userDashboard') }}"><button type="button" class="btn btn-outline-light me-2">Dashboard</button></a>
           {% else %} 
             
               <a href="{{url_for('googleLogin')}}"><button type="button" class="btn btn-outline-light me-2">Login</button></a>

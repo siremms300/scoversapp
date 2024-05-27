@@ -1,0 +1,127 @@
+
+
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet" />
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <link rel="stylesheet" href="/static/style.css">
+        <title>User Dashboard</title> 
+        <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"> -->
+    </head>
+
+    <body class="text-bg-light"> 
+
+        <div class="wrapper">
+
+            {% include 'sidebar.html' %}
+
+            <div class="main"> 
+
+                <nav class="navbar navbar-expand px-4 py-3">
+
+                    <!-- Searchbar start -->
+                    <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search" action="{{ url_for('search_courses') }}" method="GET">
+                        <input type="search" name="q" class="form-control form-control-dark" placeholder="Search..." aria-label="Search">
+                    </form>
+                    <!-- Searchbar end -->
+
+                    <!-- Profile Icon -->
+                    <div class="navbar-collapse collapse">
+                        <ul class="navbar-nav ms-auto">
+                            <li class="nav-item dropdown">
+                                <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-md-0">
+                                    <!-- <img src="/static/images/account.png" class="avatar img-fluid" alt=""> -->
+                                    <img src="{{ session['user']['picture'] if 'user' in session else '/static/images/account.png' }}" class="avatar img-fluid" alt="User Picture" style="border-radius: 50%;">
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end rounded">
+                                    <a class="dropdown-item" href="/profile">Profile</a>
+                                    <a class="dropdown-item" href="/settings">Settings</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="/logout">Logout</a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- Profile icon end -->
+                </nav>
+
+
+
+                <h3 class="fw-light fs-4 my-3">My Applications</h3>
+                <div class="row">
+                    <div class="col-12">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr class="highlight" >
+                                    <th scope="col">S/n</th>
+                                    <th scope="col">Course</th>
+                                    <th scope="col">School</th>
+                                    <th scope="col">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">1</th>
+                                    <td>Computer Science</td>
+                                    <td>Alabama State University</td>
+                                    <td>Pending</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">2</th>
+                                    <td>Software Engineering</td>
+                                    <td>University of Ontario, Canada</td>
+                                    <td>Approved</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">3</th>
+                                    <td>History and Philosophy</td>
+                                    <td>Harvard University </td>
+                                    <td>Rejected</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+
+                <!-- footer start -->
+                <footer class="footer">
+                    <div class="container-fluid">
+                        <div class="row text-body-secondary">
+                            <div class="col-6 text-start ">
+                                <a class="text-body-secondary" href=" #">
+                                    <strong>Scovers Education</strong>
+                                </a>
+                            </div>
+                            <div class="col-6 text-end text-body-secondary d-none d-md-block">
+                                <ul class="list-inline mb-0">
+                                    <li class="list-inline-item">
+                                        <a class="text-body-secondary" href="#">Contact</a>
+                                    </li>
+                                    <li class="list-inline-item">
+                                        <a class="text-body-secondary" href="#">About Us</a>
+                                    </li>
+                                    <li class="list-inline-item">
+                                        <a class="text-body-secondary" href="#">Terms & Conditions</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+
+                <!-- footer end --> 
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+        <script src="/static/script.js"></script>
+
+    </body> 
+</html>
