@@ -1,6 +1,6 @@
 #database.py 
 
-import pymysql
+import pymysql 
 
 # Database connection details
 # host = 'up-es-mad1-mysql-1.db.run-on-seenode.com'
