@@ -25,13 +25,29 @@
             <a  href="{{ url_for('userDashboard') }}"><button type="button" class="btn btn-outline-light me-2">Dashboard</button></a>
           {% else %} 
             
-              <a href="{{url_for('googleLogin')}}"><button type="button" class="btn btn-outline-light me-2">Login</button></a>
-              <a href=""><button type="button" class="btn btn-outline-light me-2">Sign-up</button></a>
+            <a href="/login"><button type="button" class="btn btn-outline-light me-2">Login</button></a>
+            <a href="/register"><button type="button" class="btn btn-outline-light me-2">Sign-up</button></a>
           
           {% endif %} 
         </div> 
 
-        
+        <!-- TRIAL DEBUG -->
+        <!-- <div class="text-end">
+          {% if session.user %} 
+
+            <a href="{{ url_for('logout') }}"><button type="button" class="btn btn-outline-light me-2">Logout</button></a>
+            {% if session.user.is_admin %}
+              <a href="{{ url_for('admin_dashboard') }}"><button type="button" class="btn btn-outline-light me-2">Admin Dashboard</button></a>
+            {% else %}
+              <a href="{{ url_for('userDashboard') }}"><button type="button" class="btn btn-outline-light me-2">Dashboard</button></a>
+            {% endif %}
+          {% else %}
+            <a href="{{ url_for('login') }}"><button type="button" class="btn btn-outline-light me-2">Login</button></a>
+            <a href="{{ url_for('register') }}"><button type="button" class="btn btn-outline-light me-2">Sign-up</button></a>
+          {% endif %}
+        </div> -->
+
+
 
       </div>
     </div>

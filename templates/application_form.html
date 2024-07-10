@@ -1,3 +1,5 @@
+<!-- APPLICATION FORM -->
+
 <h4>Application Form</h4>
 <form action="/course/{{course['id']}}/apply" method="post" class="mx-auto" style="max-width: 400px;">
     <div class="mb-3">
@@ -5,6 +7,8 @@
         <input type="text" class="form-control" id="full_name" name="full_name" placeholder="Enter your full name here" required>
     </div>
 
+    <!-- <p>{{course.explanation}}</p> -->
+    
     <div class="mb-3">
         <label for="email" class="form-label">Email</label>
         <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email address here" required>
@@ -19,5 +23,12 @@
         <label for="document_url" class="form-label">Documents Link</label>
         <input type="url" class="form-control" id="document_url" name="document_url" placeholder="Paste the URL to your documents here, preferably downloadable Google Docs">
     </div>
+
+    <!-- Hidden input fields for course details -->
+    <input type="hidden" name="course_name" value="{{ course.course }}">
+    <input type="hidden" name="location" value="{{ course.location }}">
+    <input type="hidden" name="school" value="{{ course.school }}">
+    <input type="hidden" name="tuition" value="{{ course.tuition }}">
+
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>

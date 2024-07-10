@@ -1,4 +1,4 @@
-
+<!-- application_dashboard.html -->
 
 <!DOCTYPE html>
     <html lang="en">
@@ -52,41 +52,40 @@
 
 
                 <h3 class="fw-light fs-4 my-3">My Applications</h3>
-                <div class="row">
-                    <div class="col-12">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr class="highlight" >
-                                    <th scope="col">S/n</th>
-                                    <th scope="col">Course</th>
-                                    <th scope="col">School</th>
-                                    <th scope="col">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <th scope="row">1</th>
-                                    <td>Computer Science</td>
-                                    <td>Alabama State University</td>
-                                    <td>Pending</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">2</th>
-                                    <td>Software Engineering</td>
-                                    <td>University of Ontario, Canada</td>
-                                    <td>Approved</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">3</th>
-                                    <td>History and Philosophy</td>
-                                    <td>Harvard University </td>
-                                    <td>Rejected</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
 
+                {% if applications %}
+                    <div class="row">
+                        <div class="col-12">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr class="highlight" >
+                                        <th scope="col">Application ID</th>
+                                        <th scope="col">Course</th>
+                                        <th scope="col">School</th>
+                                        <th scope="col">location</th>
+                                        <th scope="col">status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for application in applications %}
+                                        <tr>
+                                            <!-- <th scope="row">1</th> -->
+                                            <td>{{ application.id }}</td>
+                                            <td>{{ application.course_name }}</td>
+                                            <td>{{ application.school }}</td>
+                                            <td>{{ application.location }}</td>
+                                            <td>{{ application.status }}</td>
+                                        </tr>
+                                        
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                {% else %}
+                    <p>You have not applied for any courses yet.</p>
+                {% endif %}
 
                 <!-- footer start -->
                 <footer class="footer">

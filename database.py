@@ -3,15 +3,42 @@
 import pymysql
 
 # Database connection details
-host = 'up-es-mad1-mysql-1.db.run-on-seenode.com'
+# host = 'up-es-mad1-mysql-1.db.run-on-seenode.com'
+host = 'up-de-fra1-mysql-1.db.run-on-seenode.com' 
 port = 11550
 user = 'db-apxgqtiyl5lt'
-password = 'nkFjvzhlcaOP9jDD3oS1A4Dm'
+password = 'nkFjvzhlcaOP9jDD3oS1A4Dm' 
 database = 'db-apxgqtiyl5lt'
 
 
 
+
+# database.py
+
+def save_course_to_db(course, location, school, tuition, currency, explanation, requirement):
+    try:
+        connection = pymysql.connect(host=host,
+                                     port=port,
+                                     user=user,
+                                     password=password,
+                                     database=database)
+        with connection.cursor() as cursor:
+            sql = """
+            INSERT INTO courses (course, location, school, tuition, currency, explanation, requirement)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+            """
+            cursor.execute(sql, (course, location, school, tuition, currency, explanation, requirement))
+            connection.commit()
+    except pymysql.Error as e:
+        print(f"Failed to add course to the database: {e}")
+    finally:
+        connection.close()
+
+
+
+
 def load_courses_from_db(page=1, per_page=8, sort_by=None, filters=None):
+    connection = None
     try:
         connection = pymysql.connect(host=host, port=port, user=user, password=password, database=database)
         with connection.cursor() as cursor:
@@ -58,8 +85,9 @@ def load_courses_from_db(page=1, per_page=8, sort_by=None, filters=None):
         print(f"Error loading courses from the database: {e}")
         return []
     finally:
-        connection.close()
-
+        if connection is not None:
+            connection.close()
+            
 
 
 def load_course_from_db(id, course=None, location=None, school=None, tuition=None):
@@ -111,38 +139,6 @@ def load_course_from_db(id, course=None, location=None, school=None, tuition=Non
         print(f"Failed to load course from database: {e}")
 
 
-
-
-def add_application_to_db(course_id, course_name, location, school, tuition, data):
-    try:
-        connection = pymysql.connect(host=host,
-                                     port=port,
-                                     user=user,
-                                     password=password,
-                                     database=database)
-
-        with connection.cursor() as cursor:
-            # Execute the SQL INSERT statement
-            cursor.execute(
-                "INSERT INTO applications (course_id, course_name, location, school, tuition, full_name, email, phone, document_url) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
-                (course_id, course_name, location, school, tuition, data['full_name'], data['email'], data['phone'], data.get('document_url', None))
-            )
-
-            # Check if insertion was successful (returns the number of rows affected)
-            if cursor.rowcount == 1:
-                connection.commit()
-                return True  # Indicate success
-            else:
-                return False  # Indicate failure
-
-    except pymysql.Error as e:
-        # If an error occurs, print the error message
-        print(f"Failed to add application to the database: {e}")
-        return False  # Indicate failure
-
-    finally:
-        # Close the database connection regardless of success or failure
-        connection.close()
 
 
 
@@ -199,6 +195,92 @@ def search_courses_in_db(query, page=1, per_page=8, filters=None):
         connection.close()
 
 
+
+# APPLICATION LOGIC 
+def add_application_to_db(user_id, course_id, full_name, email, phone, document_url, course_name, location, school, tuition):
+    try:
+        connection = pymysql.connect(host=host,
+                                     port=port,
+                                     user=user,
+                                     password=password,
+                                     database=database)
+        with connection.cursor() as cursor:
+            sql = """
+            INSERT INTO applications (user_id, course_id, full_name, email, phone, document_url, course_name, location, school, tuition)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """
+            cursor.execute(sql, (user_id, course_id, full_name, email, phone, document_url, course_name, location, school, tuition))
+            connection.commit()
+    except pymysql.Error as e:
+        print(f"Failed to add application to the database: {e}")
+    finally:
+        connection.close()
+
+
+
+def load_user_applications_from_db(user_id):
+    try:
+        connection = pymysql.connect(host=host,
+                                     port=port,
+                                     user=user,
+                                     password=password,
+                                     database=database)
+        with connection.cursor() as cursor:
+            sql = "SELECT * FROM applications WHERE user_id = %s"
+            cursor.execute(sql, (user_id,))
+            result = cursor.fetchall()
+            
+            result_dict_list = []
+            for row in result:
+                row_dict = {
+                    "id": row[0],
+                    "user_id": row[1],
+                    "course_id": row[2],
+                    "full_name": row[3],
+                    "email": row[4],
+                    "phone": row[5],
+                    "document_url": row[6],
+                    "course_name": row[7],
+                    "location": row[8],
+                    "school": row[9],
+                    "tuition": row[10],
+                    "status": row[11]
+                }
+                result_dict_list.append(row_dict)
+            
+            return result_dict_list
+            
+    except pymysql.Error as e:
+        print(f"Error loading user applications from the database: {e}")
+        return []
+    finally:
+        connection.close()
+
+
+# ADMIN DATABASE FUNCTIONALITIES 
+
+
+
+
+# ADDING THE USER TO DATABASE 
+def save_user_to_db(user_id, name, email, hashed_password, is_admin):
+    try:
+        connection = pymysql.connect(host=host,
+                                     port=port,
+                                     user=user,
+                                     password=password,
+                                     database=database)
+        with connection.cursor() as cursor:
+            sql = "INSERT INTO users (user_id, name, email, hashed_password, is_admin) VALUES (%s, %s, %s, %s, %s)"
+            cursor.execute(sql, (user_id, name, email, hashed_password, is_admin))
+            connection.commit()
+    except pymysql.Error as e:
+        print(f"Error saving user to the database: {e}")
+    finally:
+        connection.close()
+
+
+
 def add_user_to_db(user_id, user_name, user_email):
     try:
         connection = pymysql.connect(host=host,
@@ -211,10 +293,155 @@ def add_user_to_db(user_id, user_name, user_email):
             cursor.execute("SELECT email FROM users WHERE email = %s", (user_email,)) 
             if cursor.fetchone() is None:
                 # Insert the new user
-                cursor.execute("INSERT INTO users (user_id, name, email) VALUES (%s, %s, %s)", 
+                # cursor.execute("INSERT INTO users (user_id, name, email) VALUES (%s, %s, %s)", 
+                #                (user_id, user_name, user_email))
+                # connection.commit()
+                cursor.execute("INSERT INTO users (user_id, name, email, hashed_password, is_admin) VALUES (%s, %s, %s, NULL, FALSE)", 
                                (user_id, user_name, user_email))
                 connection.commit()
     except pymysql.Error as e:
         print(f"Failed to add user to the database: {e}")
+    finally:
+        connection.close()
+
+
+
+def get_user_by_email(email):
+    try:
+        connection = pymysql.connect(host=host,
+                                     port=port,
+                                     user=user,
+                                     password=password,
+                                     database=database)
+        with connection.cursor() as cursor:
+            sql = "SELECT * FROM users WHERE email = %s"
+            cursor.execute(sql, (email,))
+            result = cursor.fetchone()
+            if result:
+                return {
+                    'user_id': result[0],
+                    'name': result[1],
+                    'email': result[2],
+                    'hashed_password': result[3],
+                    'is_admin': result[4]
+                }
+            return None
+    except pymysql.Error as e:
+        print(f"Error retrieving user from the database: {e}")
+        return None
+    finally:
+        connection.close()
+
+
+
+
+# ADMIN DATABASE FUNCTIONALITIES 
+def load_users_from_db():
+    try:
+        connection = pymysql.connect(host=host, port=port, user=user, password=password, database=database)
+        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+            cursor.execute("SELECT * FROM users")
+            return cursor.fetchall()
+    except pymysql.Error as e:
+        print(f"Failed to load users from the database: {e}")
+    finally:
+        connection.close()
+
+
+
+def load_all_applications_from_db():
+    try:
+        connection = pymysql.connect(host=host,
+                                     port=port,
+                                     user=user,
+                                     password=password,
+                                     database=database)
+        with connection.cursor() as cursor:
+            sql = "SELECT * FROM applications"
+            cursor.execute(sql)
+            result = cursor.fetchall()
+            
+            result_dict_list = []
+            for row in result:
+                row_dict = {
+                    "id": row[0],
+                    "user_id": row[1],
+                    "course_id": row[2],
+                    "full_name": row[3],
+                    "email": row[4],
+                    "phone": row[5],
+                    "document_url": row[6],
+                    "course_name": row[7],
+                    "location": row[8],
+                    "school": row[9],
+                    "tuition": row[10],
+                    "status": row[11]
+                }
+                result_dict_list.append(row_dict)
+            
+            return result_dict_list
+            
+    except pymysql.Error as e:
+        print(f"Error loading applications from the database: {e}")
+        return []
+    finally:
+        connection.close() 
+
+
+def load_single_user_applications_from_db(user_id):
+    try:
+        connection = pymysql.connect(
+            host=host,
+            port=port,
+            user=user,
+            password=password,
+            database=database
+        )
+        with connection.cursor() as cursor:
+            sql = "SELECT * FROM applications WHERE user_id = %s"
+            cursor.execute(sql, (user_id,))
+            result = cursor.fetchall()
+            
+            result_dict_list = []
+            for row in result:
+                row_dict = {
+                    "id": row[0],
+                    "user_id": row[1],
+                    "course_id": row[2],
+                    "full_name": row[3],
+                    "email": row[4],
+                    "phone": row[5],
+                    "document_url": row[6],
+                    "course_name": row[7],
+                    "location": row[8],
+                    "school": row[9],
+                    "tuition": row[10],
+                    "status": row[11]
+                }
+                result_dict_list.append(row_dict)
+            
+            return result_dict_list
+            
+    except pymysql.Error as e:
+        print(f"Error loading user applications from the database: {e}")
+        return []
+    finally:
+        connection.close()
+
+ 
+
+def update_application_status_in_db(application_id, new_status):
+    try:
+        connection = pymysql.connect(host=host,
+                                     port=port,
+                                     user=user,
+                                     password=password,
+                                     database=database)
+        with connection.cursor() as cursor:
+            sql = "UPDATE applications SET status = %s WHERE id = %s"
+            cursor.execute(sql, (new_status, application_id))
+            connection.commit()
+    except pymysql.Error as e:
+        print(f"Error updating application status in the database: {e}")
     finally:
         connection.close()

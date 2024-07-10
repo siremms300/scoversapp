@@ -1,0 +1,52 @@
+<!-- view_user_applications.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Applications</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>Applications for User</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Application ID</th>
+                <th>Course Name</th>
+                <th>Location</th>
+                <th>School</th>
+                <th>Tuition</th>
+                <th>Status</th>
+                <th>Update Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for application in applications %}
+            <tr>
+                <td>{{ application.id }}</td>
+                <td>{{ application.course_name }}</td>
+                <td>{{ application.location }}</td>
+                <td>{{ application.school }}</td>
+                <td>{{ application.tuition }}</td>
+                <td>{{ application.status }}</td>
+                <td>
+                    
+                    <form action="{{ url_for('update_application_status_for_single_user', id=application.id) }}" method="POST">
+                        <input type="hidden" name="user_id" value="{{ application.user_id }}"> <!-- Assuming application object has user_id -->
+                        <select name="status">
+                            <option value="pending" {% if application.status == 'pending' %}selected{% endif %}>Pending</option>
+                            <option value="accepted" {% if application.status == 'accepted' %}selected{% endif %}>Accepted</option>
+                            <option value="rejected" {% if application.status == 'rejected' %}selected{% endif %}>Rejected</option>
+                        </select>
+                        <button type="submit">Update</button>
+                    </form>
+
+                    
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
