@@ -4,3 +4,4 @@ pymysql
 Authlib
 requests
 bcrypt
+python-dotenv
